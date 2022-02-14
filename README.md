@@ -4,6 +4,8 @@
 
 A sample SvelteKit application built to illustrate the usage of [trpc-sveltekit](https://github.com/icflorescu/trpc-sveltekit).
 
+[Open in CodeSandbox](https://githubbox.com/icflorescu/trpc-sveltekit-example)
+
 ## Developing
 
 Once you've installed the dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
