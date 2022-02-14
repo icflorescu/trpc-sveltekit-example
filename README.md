@@ -4,7 +4,7 @@
 
 A sample SvelteKit application built to illustrate the usage of [trpc-sveltekit](https://github.com/icflorescu/trpc-sveltekit).
 
-Open in CodeSandbox: <a href="https://githubbox.com/icflorescu/trpc-sveltekit-example" target="_blank"><img src="https://user-images.githubusercontent.com/581999/153951643-a4e60c17-5c04-40e7-af2f-88e4a3ba354c.png" /></a>
+<a href="https://githubbox.com/icflorescu/trpc-sveltekit-example" target="_blank"><img src="https://user-images.githubusercontent.com/581999/153951643-a4e60c17-5c04-40e7-af2f-88e4a3ba354c.png" /></a>
 
 ## Developing
 
