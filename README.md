@@ -85,8 +85,10 @@ Then, configure your tRPC router like so:
 import trpcTransformer from '$lib/trcpTransformer';
 import * as trpc from '@trpc/server';
 
-export const router = trpc.router().transformer(trpcTransformer); // 👈
-// .merge, .query, .mutation, etc.
+export const router = trpc
+  .router()
+  // .merge, .query, .mutation, etc.
+  .transformer(trpcTransformer); // 👈
 
 export type Router = typeof router;
 ```
