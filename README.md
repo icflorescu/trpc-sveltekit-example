@@ -129,5 +129,9 @@ const config = {
 export default config;
 ```
 
+## License
+
+The [ISC License](https://github.com/icflorescu/trpc-sveltekit/blob/master/LICENSE).
+
 [license-image]: http://img.shields.io/npm/l/trpc-sveltekit.svg?style=flat-square
 [license-url]: LICENSE
