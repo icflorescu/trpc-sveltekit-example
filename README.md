@@ -8,7 +8,7 @@ A sample SvelteKit application built to illustrate the usage of [trpc-sveltekit]
 
 ## Screenshot
 
-![trpc-sveltekit-bookstall-example](https://user-images.githubusercontent.com/581999/153968828-032be743-3e49-4709-8958-b0d9ec563b7f.png)
+![View trpc-sveltekit-bookstall Example](https://user-images.githubusercontent.com/581999/153968828-032be743-3e49-4709-8958-b0d9ec563b7f.png)
 
 ## Developing
 
