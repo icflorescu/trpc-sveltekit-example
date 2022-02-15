@@ -115,7 +115,7 @@ const client = trpc.createTRPCClient<Router>({
 });
 ```
 
-❗ You'll also have to use this custom `svelte.config.js` in order to be able to build your application for production with `adapter-node`:
+❗ You'll also have to **use this custom `svelte.config.js` in order to be able to build your application for production with `adapter-node`**:
 
 ```js
 import adapter from '@sveltejs/adapter-node';
