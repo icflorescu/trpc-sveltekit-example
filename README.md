@@ -137,6 +137,23 @@ const config = {
 export default config;
 ```
 
+### Server-Side Rendering
+
+If you need to use SSR, make sure to initialize your tRPC client like so:
+
+```ts
+import { browser } from '$app/env';
+import type { Router } from '$lib/server/trpc';
+import trpcTransformer from '$lib/trcpTransformer';
+import * as trpc from '@trpc/client';
+import type { inferProcedureInput, inferProcedureOutput } from '@trpc/server';
+
+const client = trpc.createTRPCClient<Router>({
+  url: browser ? '/trpc' : 'http://localhost:3000/trpc', // 👈
+  transformer: trpcTransformer
+});
+```
+
 ## License
 
 The [ISC License](https://github.com/icflorescu/trpc-sveltekit/blob/master/LICENSE).
