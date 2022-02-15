@@ -143,7 +143,7 @@ export default config;
 
 ### Server-Side Rendering
 
-If you need to use SSR, make sure to initialize your tRPC client like so:
+If you need to use your tRPC client in SvelteKit's `load()` function for SSR, make sure to initialize it like so:
 
 ```ts
 import { browser } from '$app/env';
