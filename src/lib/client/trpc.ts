@@ -1,9 +1,13 @@
+import { browser } from '$app/env';
 import type { Router } from '$lib/server/trpc';
 import trpcTransformer from '$lib/trcpTransformer';
 import * as trpc from '@trpc/client';
 import type { inferProcedureInput, inferProcedureOutput } from '@trpc/server';
 
-const client = trpc.createTRPCClient<Router>({ url: '/trpc', transformer: trpcTransformer });
+const client = trpc.createTRPCClient<Router>({
+  url: browser ? '/trpc' : 'http://localhost:3000/trpc',
+  transformer: trpcTransformer
+});
 
 type Query = keyof Router['_def']['queries'];
 type Mutation = keyof Router['_def']['mutations'];

@@ -7,7 +7,7 @@ import { z } from 'zod';
 export default trpc
   .router()
   .query('browse', {
-    input: z.string(),
+    input: z.string().optional(),
     resolve: ({ input }) =>
       prismaClient.book.findMany({
         select: {

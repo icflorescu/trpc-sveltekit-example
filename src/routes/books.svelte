@@ -1,4 +1,4 @@
-<script lang="ts">
+<script context="module" lang="ts">
   import getEditorErrors from '$lib/client/getEditorErrors';
   import type { InferMutationInput, InferQueryOutput } from '$lib/client/trpc';
   import trpc from '$lib/client/trpc';
@@ -7,9 +7,16 @@
   import TextareaInput from '$lib/components/inputs/TextareaInput.svelte';
   import TextInput from '$lib/components/inputs/TextInput.svelte';
   import ModalEditor from '$lib/components/ModalEditor.svelte';
+  import type { Load } from '@sveltejs/kit';
   import debounce from 'debounce';
-  import { onMount } from 'svelte';
 
+  export const load: Load = async () => {
+    const books = await trpc.query('books:browse');
+    return { props: { books } };
+  };
+</script>
+
+<script lang="ts">
   type Book = InferMutationInput<'books:save'>;
   type EditorErrors = {
     title?: string;
@@ -26,15 +33,15 @@
     excerpt: ''
   });
 
-  let loading = true;
+  let loading = false;
   let query = '';
-  let books: InferQueryOutput<'books:browse'> = [];
+  export let books: InferQueryOutput<'books:browse'> = [];
   let book = newBook();
   let editorVisible = false;
   let editorBusy = false;
   let editorErrors: EditorErrors;
 
-  const load = async () => {
+  const reloadBooks = async () => {
     loading = true;
     books = await trpc.query('books:browse', query);
     loading = false;
@@ -48,11 +55,9 @@
       }))
     );
 
-  onMount(load);
-
   const handleFilter = debounce((e: CustomEvent<string>) => {
     query = e.detail;
-    load();
+    reloadBooks();
   }, 500);
 
   const handleAdd = () => {
@@ -73,7 +78,7 @@
   const handleDelete = async (e: CustomEvent<{ itemKey: string }>) => {
     loading = true;
     await trpc.mutation('books:delete', e.detail.itemKey);
-    load();
+    reloadBooks();
   };
 
   const handleEditorClose = () => {
@@ -88,7 +93,7 @@
       await trpc.mutation('books:save', book);
       editorVisible = false;
       book = newBook();
-      load();
+      reloadBooks();
     } catch (err) {
       editorErrors = getEditorErrors(err);
     }

@@ -1,13 +1,21 @@
-<script lang="ts">
+<script context="module" lang="ts">
   import getEditorErrors from '$lib/client/getEditorErrors';
   import type { InferMutationInput, InferQueryOutput } from '$lib/client/trpc';
   import trcp from '$lib/client/trpc';
   import DataTable from '$lib/components/DataTable.svelte';
   import TextInput from '$lib/components/inputs/TextInput.svelte';
   import ModalEditor from '$lib/components/ModalEditor.svelte';
+  import type { Load } from '@sveltejs/kit';
   import debounce from 'debounce';
-  import { onMount } from 'svelte';
 
+  export const load: Load = async () => {
+    const stores = await trcp.query('stores:browse');
+    const bookList = await trcp.query('books:list');
+    return { props: { stores, bookList } };
+  };
+</script>
+
+<script lang="ts">
   type Store = InferMutationInput<'stores:save'>;
   type EditorErrors = { name?: string } | void;
 
@@ -17,27 +25,32 @@
     bookIds: []
   });
 
-  let loading = true;
+  let loading = false;
   let query = '';
-  let stores: InferQueryOutput<'stores:browse'> = [];
-  let books: InferQueryOutput<'books:list'> = [];
+  export let stores: InferQueryOutput<'stores:browse'> = [];
+  export let bookList: InferQueryOutput<'books:list'> = [];
   let store = newStore();
   let editorVisible = false;
   let editorBusy = false;
   let editorErrors: EditorErrors;
 
-  const load = async () => {
+  const reloadStores = async () => {
     loading = true;
     stores = await trcp.query('stores:browse', query);
-    books = await trcp.query('books:list');
     loading = false;
   };
 
-  onMount(load);
+  const reloadBooks = async () => {
+    editorBusy = true;
+    bookList = await trcp.query('books:list');
+    editorBusy = false;
+  };
+
+  $: if (editorBusy) reloadBooks();
 
   const handleFilter = debounce((e: CustomEvent<string>) => {
     query = e.detail;
-    load();
+    reloadStores();
   }, 500);
 
   const handleAdd = () => {
@@ -58,7 +71,7 @@
   const handleDelete = async (e: CustomEvent<{ itemKey: string }>) => {
     loading = true;
     await trcp.mutation('stores:delete', e.detail.itemKey);
-    load();
+    reloadStores();
   };
 
   const handleEditorClose = () => {
@@ -73,7 +86,7 @@
       await trcp.mutation('stores:save', store);
       editorVisible = false;
       store = newStore();
-      load();
+      reloadStores();
     } catch (err) {
       editorErrors = getEditorErrors(err);
     }
@@ -115,7 +128,7 @@
   <TextInput label="Name" required bind:value={store.name} error={editorErrors?.name} />
   <fieldset>
     <legend>Titles in stock</legend>
-    {#each books as { id, title, author: { firstName, lastName } } (id)}
+    {#each bookList as { id, title, author: { firstName, lastName } } (id)}
       <label>
         <input type="checkbox" bind:group={store.bookIds} value={id} />
         {title} <em class="author">by {firstName} {lastName}</em>
