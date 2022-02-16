@@ -43,120 +43,14 @@ To run the production version of this app:
 node build
 ```
 
-## Recipes 🛠
+## Recipes, caveats, gists 🛠
 
-### Using Prisma in your tRPC router:
+See [trpc-sveltekit](https://github.com/icflorescu/trpc-sveltekit) for detailed information related to issues you may encounter when setting up with Prisma, superjson, deploying to Vercel, etc.
 
-When you're building your SvelteKit app for production, you must instantiate your Prisma client **like this**:
+## Warning ❗
 
-```ts
-import pkg from '@prisma/client';
-const { PrismaClient } = pkg;
-
-const prismaClient = new PrismaClient();
-export default prismaClient;
-```
-
-This will **not** work:
-
-```ts
-import { PrismaClient } from '@prisma/client';
-
-const prismaClient = new PrismaClient();
-export default prismaClient;
-```
-
-### Using superjson with Decimal.js / Prisma.Decimal
-
-By default, superjson only supports built-in data types to keep the bundle-size as small as possible. Here's how you extend it with with Decimal.js / Prisma.Decimal:
-
-```ts
-// $lib/trpcTransformer.ts
-import Decimal from 'decimal.js';
-import superjson from 'superjson';
-
-superjson.registerCustom<Decimal, string>(
-  {
-    isApplicable: (v): v is Decimal => Decimal.isDecimal(v),
-    serialize: (v) => v.toJSON(),
-    deserialize: (v) => new Decimal(v)
-  },
-  'decimal.js'
-);
-
-export default superjson;
-```
-
-Then, configure your tRPC router like so:
-
-```ts
-import trpcTransformer from '$lib/trcpTransformer';
-import * as trpc from '@trpc/server';
-
-export const router = trpc
-  .router()
-  // .merge, .query, .mutation, etc.
-  .transformer(trpcTransformer); // 👈
-
-export type Router = typeof router;
-```
-
-...and don't forget to configure your tRPC client:
-
-```ts
-import type { Router } from '$lib/server/trpc';
-import trpcTransformer from '$lib/trcpTransformer';
-import * as trpc from '@trpc/client';
-import type { inferProcedureInput, inferProcedureOutput } from '@trpc/server';
-
-const client = trpc.createTRPCClient<Router>({
-  url: '/trpc',
-  transformer: trpcTransformer // 👈
-});
-```
-
-❗ You'll also have to **use this custom `svelte.config.js` in order to be able to build your application for production with `adapter-node`**:
-
-```js
-import adapter from '@sveltejs/adapter-node';
-import preprocess from 'svelte-preprocess';
-
-/** @type {import('@sveltejs/kit').Config} */
-const config = {
-  preprocess: preprocess(),
-
-  kit: {
-    adapter: adapter(),
-    vite:
-      process.env.NODE_ENV === 'production'
-        ? {
-            ssr: {
-              noExternal: ['superjson']
-            }
-          }
-        : undefined
-  }
-};
-
-export default config;
-```
-
-### Server-Side Rendering
-
-If you need to use your tRPC client in SvelteKit's `load()` function for SSR, make sure to initialize it like so:
-
-```ts
-import { browser } from '$app/env';
-import type { Router } from '$lib/server/trpc';
-import trpcTransformer from '$lib/trcpTransformer';
-import * as trpc from '@trpc/client';
-import type { inferProcedureInput, inferProcedureOutput } from '@trpc/server';
-
-const client = trpc.createTRPCClient<Router>({
-  url: browser ? '/trpc' : 'http://localhost:3000/trpc', // 👈
-  transformer: trpcTransformer
-});
-```
+❌ This example won't work on Vercel because it's set up to use a local SQLite database.
+✔️ [trpc-sveltekit](https://github.com/icflorescu/trpc-sveltekit), however, does.
 
 ## License
 

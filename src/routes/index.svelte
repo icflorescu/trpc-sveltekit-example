@@ -14,7 +14,7 @@
       <a href="https://github.com/icflorescu/trpc-sveltekit" target="_blank">trpc-sveltekit</a>.
       <br />
       No REST API routes are being used white you're managing books, authors and stores — all data is
-      transferred through
+      transferred through:
       <br />
       <a class="trpc-logo" href="https://trpc.io" target="_blank">
         <img src={trpcLogoSrc} alt="tRPC" />
