@@ -47,7 +47,7 @@ node build
 
 See [trpc-sveltekit](https://github.com/icflorescu/trpc-sveltekit) for detailed information related to issues you may encounter when setting up with Prisma, superjson, deploying to Vercel, etc.
 
-## Warning ❗
+## Warning❗❗❗
 
 ❌ This example **won't work on Vercel** because it's set up to use a local SQLite database.  
 ✔️ [trpc-sveltekit](https://github.com/icflorescu/trpc-sveltekit), however, **does work on Vercel**.  
