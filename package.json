@@ -1,6 +1,6 @@
 {
   "name": "trpc-sveltekit-example",
-  "version": "1.1.1",
+  "version": "1.1.6",
   "description": "A tRPC-SvelteKit example appplication",
   "repository": "icflorescu/trpc-sveltekit-example",
   "private": true,
@@ -31,7 +31,7 @@
     "eslint-plugin-svelte3": "^3.4.0",
     "prettier": "^2.5.1",
     "prettier-plugin-svelte": "^2.6.0",
-    "prisma": "^3.9.2",
+    "prisma": "^3.10.0",
     "svelte": "^3.46.4",
     "svelte-check": "^2.4.5",
     "svelte-preprocess": "^4.10.3",
@@ -42,14 +42,14 @@
   "type": "module",
   "dependencies": {
     "@picocss/pico": "^1.4.4",
-    "@prisma/client": "3.9.2",
-    "@trpc/client": "^9.19.0",
-    "@trpc/server": "^9.19.0",
+    "@prisma/client": "3.10.0",
+    "@trpc/client": "^9.20.0",
+    "@trpc/server": "^9.20.0",
     "debounce": "^1.2.1",
     "decimal.js": "^10.3.1",
     "sass": "^1.49.8",
     "superjson": "^1.8.1",
-    "trpc-sveltekit": "^1.1.5",
+    "trpc-sveltekit": "^1.1.6",
     "yup": "^0.32.11",
     "zod": "^3.11.6"
   }
