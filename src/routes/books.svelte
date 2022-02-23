@@ -8,7 +8,7 @@
   import TextInput from '$lib/components/inputs/TextInput.svelte';
   import ModalEditor from '$lib/components/ModalEditor.svelte';
   import type { Load } from '@sveltejs/kit';
-  import formatDistanceToNow from 'date-fns/formatDistanceToNow';
+  import { formatDistanceToNow } from 'date-fns';
   import debounce from 'debounce';
 
   export const load: Load = async () => {
