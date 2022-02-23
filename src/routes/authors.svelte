@@ -7,6 +7,7 @@
   import TextInput from '$lib/components/inputs/TextInput.svelte';
   import ModalEditor from '$lib/components/ModalEditor.svelte';
   import type { Load } from '@sveltejs/kit';
+  import formatDistanceToNow from 'date-fns/formatDistanceToNow';
   import debounce from 'debounce';
 
   export const load: Load = async () => {
@@ -103,7 +104,12 @@
   columns={[
     { title: 'First name', prop: 'firstName' },
     { title: 'Last name', prop: 'lastName' },
-    { title: 'Books', textAlign: 'right', render: (author) => author._count.books }
+    { title: 'Books', textAlign: 'right', render: (author) => author._count.books },
+    {
+      title: 'Last updated',
+      textAlign: 'right',
+      render: ({ updatedAt }) => formatDistanceToNow(updatedAt) + ' ago'
+    }
   ]}
   on:filter={handleFilter}
   on:add={handleAdd}

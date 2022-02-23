@@ -14,7 +14,7 @@ export default trpc
           firstName: true,
           lastName: true,
           _count: { select: { books: true } },
-          createdAt: true
+          updatedAt: true
         },
         where: input
           ? { OR: [{ firstName: { contains: input } }, { lastName: { contains: input } }] }

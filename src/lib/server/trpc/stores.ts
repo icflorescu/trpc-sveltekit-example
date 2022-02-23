@@ -13,7 +13,7 @@ export default trpc
           id: true,
           name: true,
           _count: { select: { books: true } },
-          createdAt: true
+          updatedAt: true
         },
         where: input ? { name: { contains: input } } : undefined,
         orderBy: [{ name: 'asc' }]

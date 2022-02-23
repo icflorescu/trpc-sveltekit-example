@@ -15,7 +15,7 @@ export default trpc
           title: true,
           author: { select: { firstName: true, lastName: true } },
           price: true,
-          createdAt: true
+          updatedAt: true
         },
         where: input
           ? {

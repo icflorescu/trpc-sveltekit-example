@@ -8,6 +8,7 @@
   import TextInput from '$lib/components/inputs/TextInput.svelte';
   import ModalEditor from '$lib/components/ModalEditor.svelte';
   import type { Load } from '@sveltejs/kit';
+  import formatDistanceToNow from 'date-fns/formatDistanceToNow';
   import debounce from 'debounce';
 
   export const load: Load = async () => {
@@ -117,7 +118,12 @@
       title: 'Author',
       render: ({ author: { firstName, lastName } }) => `${firstName} ${lastName}`
     },
-    { title: 'Price', render: ({ price }) => price.toFixed(2), textAlign: 'right' }
+    { title: 'Price', render: ({ price }) => price.toFixed(2), textAlign: 'right' },
+    {
+      title: 'Last updated',
+      render: ({ updatedAt }) => formatDistanceToNow(updatedAt) + ' ago',
+      textAlign: 'right'
+    }
   ]}
   on:filter={handleFilter}
   on:add={handleAdd}
