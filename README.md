@@ -12,7 +12,7 @@ Open it directly in CodeSandbox:
 
 ## Screenshot
 
-![View trpc-sveltekit-bookstall Example](https://user-images.githubusercontent.com/581999/153968828-032be743-3e49-4709-8958-b0d9ec563b7f.png)
+![trpc-sveltekit-example](https://user-images.githubusercontent.com/581999/155307645-ca3b0f30-4a25-43d2-a536-ec1a4836c70a.png)
 
 ## Developing
 
