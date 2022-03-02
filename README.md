@@ -4,6 +4,10 @@
 
 A sample SvelteKit application built to illustrate the usage of [trpc-sveltekit](https://github.com/icflorescu/trpc-sveltekit).
 
+## ❤️🇺🇦
+
+See [below](#stand-with-ukraine).
+
 ## CodeSandbox
 
 Open it directly in CodeSandbox:
@@ -51,6 +55,10 @@ See [trpc-sveltekit](https://github.com/icflorescu/trpc-sveltekit) for detailed 
 
 ❌ This example **won't work on Vercel** because it's set up to use a local SQLite database.  
 ✔️ [trpc-sveltekit](https://github.com/icflorescu/trpc-sveltekit), however, **does work on Vercel**.  
+
+## Stand with Ukraine 
+
+On 24th of February 2022 [Russia unlawfully invaded Ukraine](https://en.wikipedia.org/wiki/Russo-Ukrainian_War). This is an unjustified, unprovoked attack on the sovereignty of a neighboring country, but also an open affront to international peace and stability that has the potential to degenerate into a nuclear event threatening the very existence of humanity. I am an EU (Romanian) citizen, but I am doing everything in my power to stop this madness. I stand with Ukraine. The entire Svelte community ❤️🇺🇦. Here's [how you can show your support](https://www.stopputin.net/).
 
 ## License
 
