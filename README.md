@@ -54,7 +54,7 @@ See [trpc-sveltekit](https://github.com/icflorescu/trpc-sveltekit) for detailed 
 ## Warning❗❗❗
 
 ❌ This example **won't work on Vercel** because it's set up to use a local SQLite database.  
-✔️ [trpc-sveltekit](https://github.com/icflorescu/trpc-sveltekit), however, **does work on Vercel**.  
+✔️ [trpc-sveltekit](https://github.com/icflorescu/trpc-sveltekit), however, **does work on Vercel**.
 
 ## Stand with Ukraine
 
