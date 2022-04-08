@@ -1,7 +1,7 @@
 <script context="module" lang="ts">
   import getEditorErrors from '$lib/client/getEditorErrors';
   import type { InferMutationInput, InferQueryOutput } from '$lib/client/trpc';
-  import trcp from '$lib/client/trpc';
+  import trpc from '$lib/client/trpc';
   import DataTable from '$lib/components/DataTable.svelte';
   import TextInput from '$lib/components/inputs/TextInput.svelte';
   import ModalEditor from '$lib/components/ModalEditor.svelte';
@@ -10,8 +10,8 @@
   import debounce from 'debounce';
 
   export const load: Load = async ({ fetch }) => {
-    const stores = await trcp(fetch).query('stores:browse');
-    const bookList = await trcp(fetch).query('books:list');
+    const stores = await trpc(fetch).query('stores:browse');
+    const bookList = await trpc(fetch).query('books:list');
     return { props: { stores, bookList } };
   };
 </script>
@@ -37,13 +37,13 @@
 
   const reloadStores = async () => {
     loading = true;
-    stores = await trcp().query('stores:browse', query);
+    stores = await trpc().query('stores:browse', query);
     loading = false;
   };
 
   const reloadBooks = async () => {
     editorBusy = true;
-    bookList = await trcp().query('books:list');
+    bookList = await trpc().query('books:list');
     editorBusy = false;
   };
 
@@ -64,14 +64,14 @@
     editorErrors = undefined;
     editorBusy = true;
     editorVisible = true;
-    const data = await trcp().query('stores:read', e.detail.itemKey);
+    const data = await trpc().query('stores:read', e.detail.itemKey);
     if (data) store = { ...data, bookIds: data.books.map(({ id }) => id) };
     editorBusy = false;
   };
 
   const handleDelete = async (e: CustomEvent<{ itemKey: string }>) => {
     loading = true;
-    await trcp().mutation('stores:delete', e.detail.itemKey);
+    await trpc().mutation('stores:delete', e.detail.itemKey);
     reloadStores();
   };
 
@@ -84,7 +84,7 @@
   const handleEditorSave = async () => {
     editorBusy = true;
     try {
-      await trcp().mutation('stores:save', store);
+      await trpc().mutation('stores:save', store);
       editorVisible = false;
       store = newStore();
       reloadStores();
