@@ -10,8 +10,8 @@
   import { formatDistanceToNow } from 'date-fns';
   import debounce from 'debounce';
 
-  export const load: Load = async () => {
-    const authors = await trpc.query('authors:browse');
+  export const load: Load = async ({ fetch }) => {
+    const authors = await trpc(fetch).query('authors:browse');
     return { props: { authors } };
   };
 </script>
@@ -41,7 +41,7 @@
 
   const reloadAuthors = async () => {
     loading = true;
-    authors = await trpc.query('authors:browse', query);
+    authors = await trpc().query('authors:browse', query);
     loading = false;
   };
 
@@ -60,14 +60,14 @@
     editorErrors = undefined;
     editorBusy = true;
     editorVisible = true;
-    const data = await trpc.query('authors:read', e.detail.itemKey);
+    const data = await trpc().query('authors:read', e.detail.itemKey);
     if (data) author = { ...data, bio: data.bio || '' };
     editorBusy = false;
   };
 
   const handleDelete = async (e: CustomEvent<{ itemKey: string }>) => {
     loading = true;
-    await trpc.mutation('authors:delete', e.detail.itemKey);
+    await trpc().mutation('authors:delete', e.detail.itemKey);
     reloadAuthors();
   };
 
@@ -80,7 +80,7 @@
   const handleEditorSave = async () => {
     editorBusy = true;
     try {
-      await trpc.mutation('authors:save', author);
+      await trpc().mutation('authors:save', author);
       editorVisible = false;
       author = newAuthor();
       reloadAuthors();
