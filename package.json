@@ -1,6 +1,6 @@
 {
   "name": "trpc-sveltekit-example",
-  "version": "1.2.2",
+  "version": "1.2.5",
   "description": "A tRPC-SvelteKit example appplication",
   "repository": "icflorescu/trpc-sveltekit-example",
   "private": true,
@@ -50,7 +50,7 @@
     "decimal.js": "^10.3.1",
     "sass": "^1.51.0",
     "superjson": "^1.9.0",
-    "trpc-sveltekit": "^1.2.4",
+    "trpc-sveltekit": "^1.2.5",
     "zod": "^3.14.4"
   }
 }
