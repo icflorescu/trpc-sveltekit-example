@@ -1,6 +1,6 @@
 {
   "name": "trpc-sveltekit-example",
-  "version": "1.2.5",
+  "version": "1.2.7",
   "description": "A tRPC-SvelteKit example appplication",
   "repository": "icflorescu/trpc-sveltekit-example",
   "private": true,
@@ -20,10 +20,10 @@
     "format": "prettier --ignore-path .gitignore --write --plugin-search-dir=. ."
   },
   "devDependencies": {
-    "@sveltejs/adapter-node": "next",
-    "@sveltejs/kit": "next",
+    "@sveltejs/adapter-node": "^1.0.0-next.73",
+    "@sveltejs/kit": "^1.0.0-next.323",
     "@types/debounce": "^1.2.1",
-    "@types/node": "^17.0.27",
+    "@types/node": "^17.0.29",
     "@typescript-eslint/eslint-plugin": "^5.21.0",
     "@typescript-eslint/parser": "^5.21.0",
     "eslint": "^8.14.0",
@@ -31,7 +31,7 @@
     "eslint-plugin-svelte3": "^3.4.1",
     "prettier": "^2.6.2",
     "prettier-plugin-svelte": "^2.7.0",
-    "prisma": "^3.12.0",
+    "prisma": "^3.13.0",
     "svelte": "^3.47.0",
     "svelte-check": "^2.7.0",
     "svelte-preprocess": "^4.10.6",
@@ -42,7 +42,7 @@
   "type": "module",
   "dependencies": {
     "@picocss/pico": "^1.5.0",
-    "@prisma/client": "3.12.0",
+    "@prisma/client": "3.13.0",
     "@trpc/client": "^9.23.0",
     "@trpc/server": "^9.23.0",
     "date-fns": "^2.28.0",
@@ -50,7 +50,7 @@
     "decimal.js": "^10.3.1",
     "sass": "^1.51.0",
     "superjson": "^1.9.0",
-    "trpc-sveltekit": "^1.2.5",
+    "trpc-sveltekit": "^1.2.7",
     "zod": "^3.14.4"
   }
 }
