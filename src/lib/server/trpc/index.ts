@@ -1,6 +1,6 @@
-import trpcTransformer from '$lib/trcpTransformer';
 import type { inferAsyncReturnType } from '@trpc/server';
 import * as trpc from '@trpc/server';
+import trpcTransformer from 'trpc-transformer';
 import authors from './authors';
 import books from './books';
 import stores from './stores';

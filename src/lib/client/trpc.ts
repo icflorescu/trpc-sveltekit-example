@@ -1,10 +1,11 @@
 import { browser } from '$app/env';
 import type { Router } from '$lib/server/trpc';
-import trpcTransformer from '$lib/trcpTransformer';
 import * as trpc from '@trpc/client';
 import type { inferProcedureInput, inferProcedureOutput } from '@trpc/server';
+import trpcTransformer from 'trpc-transformer';
 
 const url = browser ? '/trpc' : 'http://localhost:3000/trpc';
+
 export default (loadFetch?: typeof fetch) =>
   trpc.createTRPCClient<Router>({
     url: loadFetch ? '/trpc' : url,
