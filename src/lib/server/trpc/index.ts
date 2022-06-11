@@ -5,7 +5,7 @@ import authors from './authors';
 import books from './books';
 import stores from './stores';
 
-export const createContext = () => ({});
+export const createContext = async () => ({});
 
 export const router = trpc
   .router<inferAsyncReturnType<typeof createContext>>()
