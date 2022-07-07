@@ -1,6 +1,6 @@
 {
   "name": "trpc-sveltekit-example",
-  "version": "2.1.1",
+  "version": "2.1.2",
   "description": "A tRPC-SvelteKit example appplication",
   "repository": "icflorescu/trpc-sveltekit-example",
   "private": true,
@@ -10,10 +10,9 @@
   },
   "license": "ISC",
   "scripts": {
-    "dev": "svelte-kit dev",
-    "build": "svelte-kit build",
-    "package": "svelte-kit package",
-    "preview": "svelte-kit preview",
+    "dev": "vite dev",
+    "build": "vite build",
+    "preview": "vite preview",
     "check": "svelte-check --tsconfig ./tsconfig.json",
     "check:watch": "svelte-check --tsconfig ./tsconfig.json --watch",
     "lint": "prettier --ignore-path .gitignore --check --plugin-search-dir=. . && eslint --ignore-path .gitignore .",
@@ -21,23 +20,24 @@
   },
   "devDependencies": {
     "@sveltejs/adapter-node": "^1.0.0-next.78",
-    "@sveltejs/kit": "^1.0.0-next.357",
+    "@sveltejs/kit": "^1.0.0-next.360",
     "@types/debounce": "^1.2.1",
-    "@types/node": "^18.0.0",
-    "@typescript-eslint/eslint-plugin": "^5.30.0",
-    "@typescript-eslint/parser": "^5.30.0",
-    "eslint": "^8.18.0",
+    "@types/node": "^18.0.3",
+    "@typescript-eslint/eslint-plugin": "^5.30.5",
+    "@typescript-eslint/parser": "^5.30.5",
+    "eslint": "^8.19.0",
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-svelte3": "^4.0.0",
     "prettier": "^2.7.1",
     "prettier-plugin-svelte": "^2.7.0",
     "prisma": "^4.0.0",
-    "svelte": "^3.48.0",
+    "svelte": "^3.49.0",
     "svelte-check": "^2.8.0",
     "svelte-preprocess": "^4.10.7",
-    "ts-node": "^10.8.1",
+    "ts-node": "^10.8.2",
     "tslib": "^2.4.0",
-    "typescript": "^4.7.4"
+    "typescript": "^4.7.4",
+    "vite": "^2.9.13"
   },
   "type": "module",
   "dependencies": {
@@ -50,7 +50,7 @@
     "decimal.js": "^10.3.1",
     "sass": "^1.53.0",
     "trpc-sveltekit": "^2.1.1",
-    "trpc-transformer": "^2.0.2",
+    "trpc-transformer": "^2.0.3",
     "zod": "^3.17.3"
   }
 }
