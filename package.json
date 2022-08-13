@@ -50,7 +50,7 @@
     "decimal.js": "^10.3.1",
     "sass": "^1.54.4",
     "trpc-sveltekit": "^2.3.0",
-    "trpc-transformer": "^2.0.3",
+    "trpc-transformer": "^2.0.4",
     "zod": "^3.18.0"
   }
 }
