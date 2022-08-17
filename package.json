@@ -19,8 +19,8 @@
     "format": "prettier --ignore-path .gitignore --write --plugin-search-dir=. ."
   },
   "devDependencies": {
-    "@sveltejs/adapter-node": "^1.0.0-next.86",
-    "@sveltejs/kit": "^1.0.0-next.405",
+    "@sveltejs/adapter-node": "1.0.0-next.86",
+    "@sveltejs/kit": "1.0.0-next.405",
     "@types/debounce": "^1.2.1",
     "@types/node": "^18.7.2",
     "@typescript-eslint/eslint-plugin": "^5.33.0",
@@ -32,12 +32,12 @@
     "prettier-plugin-svelte": "^2.7.0",
     "prisma": "^4.2.1",
     "svelte": "^3.49.0",
-    "svelte-check": "^2.8.0",
+    "svelte-check": "^2.8.1",
     "svelte-preprocess": "^4.10.7",
     "ts-node": "^10.9.1",
     "tslib": "^2.4.0",
     "typescript": "^4.7.4",
-    "vite": "^3.0.7"
+    "vite": "^3.0.8"
   },
   "type": "module",
   "dependencies": {
@@ -47,10 +47,10 @@
     "@trpc/server": "^9.27.0",
     "date-fns": "^2.29.1",
     "debounce": "^1.2.1",
-    "decimal.js": "^10.3.1",
+    "decimal.js": "^10.4.0",
     "sass": "^1.54.4",
     "trpc-sveltekit": "^2.3.0",
-    "trpc-transformer": "^2.0.4",
+    "trpc-transformer": "^2.1.0",
     "zod": "^3.18.0"
   }
 }
