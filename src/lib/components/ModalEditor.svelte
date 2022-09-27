@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { browser } from '$app/env';
+  import { browser } from '$app/environment';
   import { createEventDispatcher } from 'svelte';
   import { fly } from 'svelte/transition';
   import BusyOverlay from './BusyOverlay.svelte';

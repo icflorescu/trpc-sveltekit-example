@@ -1,4 +1,4 @@
-import { browser } from '$app/env';
+import { browser } from '$app/environment';
 import type { Router } from '$lib/server/trpc';
 import * as trpc from '@trpc/client';
 import type { inferProcedureInput, inferProcedureOutput } from '@trpc/server';
