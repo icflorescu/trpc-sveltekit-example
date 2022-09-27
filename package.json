@@ -1,6 +1,6 @@
 {
   "name": "trpc-sveltekit-example",
-  "version": "2.3.0",
+  "version": "2.3.5",
   "description": "A tRPC-SvelteKit example appplication",
   "repository": "icflorescu/trpc-sveltekit-example",
   "private": true,
