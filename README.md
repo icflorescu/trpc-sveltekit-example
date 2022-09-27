@@ -1,4 +1,4 @@
-# 😎 tRPC-SvelteKit-Example
+# 😎tRPC-SvelteKit-Example
 
 [![License][license-image]][license-url]
 
