@@ -22,7 +22,7 @@
   onMount(load);
 </script>
 
-<label area-busy={loading}>
+<label aria-busy={loading}>
   {label}<LabelAsterisk {required} />
   <select bind:value on:focus={load} aria-invalid={error ? 'true' : undefined}>
     <option value="">Select...</option>
