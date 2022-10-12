@@ -1,23 +1,18 @@
-<script context="module" lang="ts">
+<script lang="ts">
   import getEditorErrors from '$lib/client/getEditorErrors';
-  import type { InferMutationInput, InferQueryOutput } from '$lib/client/trpc';
+  import type { InferMutationInput } from '$lib/client/trpc';
   import trpc from '$lib/client/trpc';
   import DataTable from '$lib/components/DataTable.svelte';
   import Select from '$lib/components/inputs/Select.svelte';
   import TextareaInput from '$lib/components/inputs/TextareaInput.svelte';
   import TextInput from '$lib/components/inputs/TextInput.svelte';
   import ModalEditor from '$lib/components/ModalEditor.svelte';
-  import type { Load } from '@sveltejs/kit';
   import { formatDistanceToNow } from 'date-fns';
   import debounce from 'debounce';
+  import type { PageData } from './$types';
 
-  export const load: Load = async ({ fetch }) => {
-    const books = await trpc(fetch).query('books:browse');
-    return { props: { books } };
-  };
-</script>
+  export let data: PageData;
 
-<script lang="ts">
   type Book = InferMutationInput<'books:save'>;
   type EditorErrors = {
     title?: string;
@@ -36,7 +31,6 @@
 
   let loading = false;
   let query = '';
-  export let books: InferQueryOutput<'books:browse'> = [];
   let book = newBook();
   let editorVisible = false;
   let editorBusy = false;
@@ -44,7 +38,7 @@
 
   const reloadBooks = async () => {
     loading = true;
-    books = await trpc().query('books:browse', query);
+    data.books = await trpc().query('books:browse', query);
     loading = false;
   };
 
@@ -112,7 +106,7 @@
   {loading}
   title="Books"
   filterDescription="title or author"
-  items={books}
+  items={data.books}
   key="id"
   columns={[
     { title: 'Title', prop: 'title' },

@@ -1,25 +1,16 @@
-<script context="module" lang="ts">
+<script lang="ts">
   import getEditorErrors from '$lib/client/getEditorErrors';
-  import type { InferMutationInput, InferQueryOutput } from '$lib/client/trpc';
+  import type { InferMutationInput } from '$lib/client/trpc';
   import trpc from '$lib/client/trpc';
   import DataTable from '$lib/components/DataTable.svelte';
   import TextInput from '$lib/components/inputs/TextInput.svelte';
   import ModalEditor from '$lib/components/ModalEditor.svelte';
-  import type { Load } from '@sveltejs/kit';
   import { formatDistanceToNow } from 'date-fns';
   import debounce from 'debounce';
+  import type { PageData } from './$types';
 
-  export const load: Load = async ({ fetch }) => {
-    const trpcClient = trpc(fetch);
-    const [stores, bookList] = await Promise.all([
-      trpcClient.query('stores:browse'),
-      trpcClient.query('books:list')
-    ]);
-    return { props: { stores, bookList } };
-  };
-</script>
+  export let data: PageData;
 
-<script lang="ts">
   type Store = InferMutationInput<'stores:save'>;
   type EditorErrors = { name?: string } | void;
 
@@ -31,8 +22,6 @@
 
   let loading = false;
   let query = '';
-  export let stores: InferQueryOutput<'stores:browse'> = [];
-  export let bookList: InferQueryOutput<'books:list'> = [];
   let store = newStore();
   let editorVisible = false;
   let editorBusy = false;
@@ -40,13 +29,13 @@
 
   const reloadStores = async () => {
     loading = true;
-    stores = await trpc().query('stores:browse', query);
+    data.stores = await trpc().query('stores:browse', query);
     loading = false;
   };
 
   const reloadBooks = async () => {
     editorBusy = true;
-    bookList = await trpc().query('books:list');
+    data.bookList = await trpc().query('books:list');
     editorBusy = false;
   };
 
@@ -106,7 +95,7 @@
   {loading}
   title="Stores"
   filterDescription="name"
-  items={stores}
+  items={data.stores}
   key="id"
   columns={[
     { title: 'Name', prop: 'name' },
@@ -133,7 +122,7 @@
   <TextInput label="Name" required bind:value={store.name} error={editorErrors?.name} />
   <fieldset>
     <legend>Titles in stock</legend>
-    {#each bookList as { id, title, author: { firstName, lastName } } (id)}
+    {#each data.bookList as { id, title, author: { firstName, lastName } } (id)}
       <label>
         <input type="checkbox" bind:group={store.bookIds} value={id} />
         {title} <em class="author">by {firstName} {lastName}</em>
