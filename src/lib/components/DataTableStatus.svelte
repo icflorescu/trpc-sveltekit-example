@@ -11,7 +11,7 @@
 <tr>
   <td colspan={columnsLength + 1}>
     {#if loading}Loading...{:else}No {itemsPluralName} found.<br />Why don't you
-      <!-- svelte-ignore a11y-missing-attribute -->
+      <!-- svelte-ignore a11y-missing-attribute a11y-click-events-have-key-events -->
       <a on:click={() => dispatch('add')}>add one</a>?{/if}
   </td>
 </tr>

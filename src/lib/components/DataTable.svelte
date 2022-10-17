@@ -50,9 +50,11 @@
             <td style:text-align={textAlign || 'left'}>{prop ? item[prop] : render?.(item)}</td>
           {/each}
           <td class="actions">
+            <!-- svelte-ignore a11y-click-events-have-key-events -->
             <span class="action" on:click={() => dispatch('edit', { itemKey: item[key] })}>
               <IconEdit />
             </span>
+            <!-- svelte-ignore a11y-click-events-have-key-events -->
             <span class="action danger" on:click={() => dispatch('delete', { itemKey: item[key] })}>
               <IconDelete />
             </span>

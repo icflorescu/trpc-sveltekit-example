@@ -11,12 +11,14 @@
     <p class="emoji">😎</p>
     <p>
       Welcome to Bookstall, a sample SvelteKit application built to illustrate the usage of ✨
-      <a href="https://github.com/icflorescu/trpc-sveltekit" target="_blank">trpc-sveltekit</a>.
+      <a href="https://github.com/icflorescu/trpc-sveltekit" target="_blank" rel="noreferrer"
+        >trpc-sveltekit</a
+      >.
       <br />
       No REST API routes are being used white you're managing books, authors and stores — all data is
       transferred through:
       <br />
-      <a class="trpc-logo" href="https://trpc.io" target="_blank">
+      <a class="trpc-logo" href="https://trpc.io" target="_blank" rel="noreferrer">
         <img src={trpcLogoSrc} alt="tRPC" />
         <br />
         tRPC

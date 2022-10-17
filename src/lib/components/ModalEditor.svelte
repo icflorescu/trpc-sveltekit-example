@@ -27,6 +27,7 @@
   }
 </script>
 
+<!-- svelte-ignore a11y-click-events-have-key-events -->
 <dialog open={visible} on:click|self={handleCancelClick}>
   {#if visible}
     <article transition:fly={{ y: -200, duration: 100 }}>
