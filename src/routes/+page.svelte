@@ -15,7 +15,7 @@
         >trpc-sveltekit</a
       >.
       <br />
-      No REST API routes are being used white you're managing books, authors and stores — all data is
+      No REST API routes are being used while you're managing books, authors and stores — all data is
       transferred through:
       <br />
       <a class="trpc-logo" href="https://trpc.io" target="_blank" rel="noreferrer">
