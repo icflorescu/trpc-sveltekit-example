@@ -1,43 +1,49 @@
 <script lang="ts">
   import trpcLogoSrc from '$lib/assets/trpc-logo.png';
+  import type { PageData } from './$types';
+
+  export let data: PageData;
 </script>
 
 <svelte:head>
-  <title>A tRPC-SvelteKit Example Appplication • Bookstall</title>
+  <title>A tRPC-SvelteKit example application • Bookstall</title>
 </svelte:head>
 
 <div class="root">
-  <div class="content">
-    <p class="emoji">😎</p>
-    <p>
-      Welcome to Bookstall, a sample SvelteKit application built to illustrate the usage of ✨
-      <a href="https://github.com/icflorescu/trpc-sveltekit" target="_blank" rel="noreferrer"
-        >trpc-sveltekit</a
-      >.
+  <p class="emoji">😎</p>
+  <p>
+    Welcome to Bookstall, a sample SvelteKit application built to illustrate the usage of ✨
+    <a href="https://github.com/icflorescu/trpc-sveltekit" target="_blank" rel="noreferrer"
+      >trpc-sveltekit</a
+    >.
+    <br />
+    No REST API routes are being used white you're managing books, authors and stores — all data is transferred
+    through:
+    <br />
+    <a class="trpc-logo" href="https://trpc.io" target="_blank" rel="noreferrer">
+      <img src={trpcLogoSrc} alt="tRPC" />
       <br />
-      No REST API routes are being used while you're managing books, authors and stores — all data is
-      transferred through:
+      tRPC
+    </a>
+  </p>
+  <p>
+    You are {data.isAuthenticated ? '' : 'not'} authenticated{data.userName
+      ? ` as ${data.userName}`
+      : ''}.
+    <br />
+    {#if data.isAuthenticated}
+      You will be able to browse and edit the books, authors and stores.
+    {:else}
+      You will be able to browse the books, authors and stores,
       <br />
-      <a class="trpc-logo" href="https://trpc.io" target="_blank" rel="noreferrer">
-        <img src={trpcLogoSrc} alt="tRPC" />
-        <br />
-        tRPC
-      </a>
-    </p>
-  </div>
+      but you'll need to <a href="/login">authenticate</a> in order to edit them.
+    {/if}
+  </p>
 </div>
 
 <style>
   .root {
-    height: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
     text-align: center;
-  }
-
-  .content {
-    margin-top: -4rem;
   }
 
   .emoji {

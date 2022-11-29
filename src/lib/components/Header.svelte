@@ -1,31 +1,52 @@
 <script lang="ts">
+  import { invalidateAll } from '$app/navigation';
   import HeaderNavLink from './HeaderNavLink.svelte';
+
+  export let isAuthenticated: boolean;
+
+  const logout = async () => {
+    await fetch('/logout', { method: 'POST' });
+    invalidateAll();
+  };
 </script>
 
 <header>
-  <h1>Bookstall</h1>
-  <p>Fantasy Novels</p>
+  <a class="title-link" href="/">
+    <h1>Bookstall</h1>
+    <p>Fantasy novels</p>
+  </a>
   <hr />
   <nav>
     <ul>
-      <HeaderNavLink to="/" title="Home" />
       <HeaderNavLink to="/authors" title="Authors" />
       <HeaderNavLink to="/books" title="Books" />
       <HeaderNavLink to="/stores" title="Stores" />
+      {#if isAuthenticated}
+        <HeaderNavLink on:click={logout} title="Logout" />
+      {:else}
+        <HeaderNavLink to="/login" title="Login" />
+      {/if}
     </ul>
   </nav>
 </header>
 
-<style>
+<style lang="scss">
   header {
     background: var(--card-background-color);
-    padding: 1em 1em 0.25em;
+    border-bottom: 1px solid var(--muted-border-color);
+    padding: 1em 1em 0;
     text-align: center;
     text-transform: uppercase;
   }
 
+  .title-link {
+    display: inline-block;
+    text-decoration: none;
+  }
+
   h1,
   p {
+    color: var(--h6-color);
     font-family: Cormorant, serif;
     line-height: 1;
     margin: 0;

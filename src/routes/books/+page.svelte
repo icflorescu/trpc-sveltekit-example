@@ -1,100 +1,100 @@
 <script lang="ts">
-  import getEditorErrors from '$lib/client/getEditorErrors';
-  import type { InferMutationInput } from '$lib/client/trpc';
-  import trpc from '$lib/client/trpc';
+  import { invalidateAll } from '$app/navigation';
+  import AuthorizationAlert from '$lib/components/AuthorizationAlert.svelte';
   import DataTable from '$lib/components/DataTable.svelte';
+  import CheckboxList from '$lib/components/inputs/CheckboxList.svelte';
   import Select from '$lib/components/inputs/Select.svelte';
   import TextareaInput from '$lib/components/inputs/TextareaInput.svelte';
   import TextInput from '$lib/components/inputs/TextInput.svelte';
   import ModalEditor from '$lib/components/ModalEditor.svelte';
-  import { formatDistanceToNow } from 'date-fns';
-  import debounce from 'debounce';
+  import { savable } from '$lib/savable';
+  import { trpc } from '$lib/trpc/client';
+  import type { RouterInputs, RouterOutputs } from '$lib/trpc/router';
+  import { TRPCClientError } from '@trpc/client';
   import type { PageData } from './$types';
 
   export let data: PageData;
 
-  type Book = InferMutationInput<'books:save'>;
-  type EditorErrors = {
-    title?: string;
-    authorId?: string;
-    price?: string;
-    excerpt?: string;
-  } | void;
+  let busy = false;
+  let item: RouterInputs['books']['save'] | null = null;
+  let authors: RouterOutputs['authors']['loadOptions'] = [];
+  let stores: RouterOutputs['stores']['loadOptions'] = [];
+  let errors: { message: string; path: string[] }[] | null = null;
+  let needsAuthorization = false;
 
-  const newBook = (): Book => ({
-    id: null,
-    title: '',
-    authorId: '',
-    price: '',
-    excerpt: ''
-  });
-
-  let loading = false;
-  let query = '';
-  let book = newBook();
-  let editorVisible = false;
-  let editorBusy = false;
-  let editorErrors: EditorErrors;
-
-  const reloadBooks = async () => {
-    loading = true;
-    data.books = await trpc().query('books:browse', query);
-    loading = false;
-  };
-
-  const getAuthorOptions = () =>
-    trpc()
-      .query('authors:list')
-      .then((authors) =>
-        authors.map(({ id, firstName, lastName }) => ({
-          value: id,
-          label: `${firstName} ${lastName}`
-        }))
-      );
-
-  const handleFilter = debounce((e: CustomEvent<string>) => {
-    query = e.detail;
-    reloadBooks();
-  }, 500);
-
-  const handleAdd = () => {
-    book = newBook();
-    editorErrors = undefined;
-    editorVisible = true;
-  };
-
-  const handleEdit = async (e: CustomEvent<{ itemKey: string }>) => {
-    editorErrors = undefined;
-    editorBusy = true;
-    editorVisible = true;
-    const data = await trpc().query('books:read', e.detail.itemKey);
-    if (data) book = { ...data, price: data.price.toFixed(2), excerpt: data.excerpt || '' };
-    editorBusy = false;
-  };
-
-  const handleDelete = async (e: CustomEvent<{ itemKey: string }>) => {
-    loading = true;
-    await trpc().mutation('books:delete', e.detail.itemKey);
-    reloadBooks();
-  };
-
-  const handleEditorClose = () => {
-    editorVisible = false;
-    book = newBook();
-    editorErrors = undefined;
-  };
-
-  const handleEditorSave = async () => {
-    editorBusy = true;
-    try {
-      await trpc().mutation('books:save', book);
-      editorVisible = false;
-      book = newBook();
-      reloadBooks();
-    } catch (err) {
-      editorErrors = getEditorErrors(err);
+  const handleAdd = async () => {
+    if (!data.isAuthenticated) {
+      needsAuthorization = true;
+      return;
     }
-    editorBusy = false;
+
+    [authors, stores] = await Promise.all([
+      trpc().authors.loadOptions.query(),
+      trpc().stores.loadOptions.query()
+    ]);
+
+    item = {
+      id: null,
+      title: '',
+      price: '',
+      excerpt: '',
+      authorId: '',
+      storeIds: []
+    };
+  };
+
+  const handleEdit = async (e: CustomEvent<string>) => {
+    if (!data.isAuthenticated) {
+      needsAuthorization = true;
+      return;
+    }
+
+    busy = true;
+    [item, authors, stores] = await Promise.all([
+      trpc().books.load.query(e.detail),
+      trpc().authors.loadOptions.query(),
+      trpc().stores.loadOptions.query()
+    ]);
+    busy = false;
+  };
+
+  const handleDelete = async (e: CustomEvent<string>) => {
+    if (!data.isAuthenticated) {
+      needsAuthorization = true;
+      return;
+    }
+
+    busy = true;
+    await trpc().books.delete.mutate(e.detail);
+    await invalidateAll();
+    busy = false;
+  };
+
+  const handleCancel = () => {
+    item = null;
+    errors = null;
+  };
+
+  const handleSave = async (e: { detail: RouterInputs['books']['save'] }) => {
+    if (!data.isAuthenticated) {
+      needsAuthorization = true;
+      return;
+    }
+
+    busy = true;
+    try {
+      await trpc().books.save.mutate(savable(e.detail));
+      item = null;
+      await invalidateAll();
+    } catch (err) {
+      if (err instanceof TRPCClientError) {
+        errors = JSON.parse(err.message);
+      } else {
+        throw err;
+      }
+    } finally {
+      busy = false;
+    }
   };
 </script>
 
@@ -103,47 +103,38 @@
 </svelte:head>
 
 <DataTable
-  {loading}
+  {busy}
   title="Books"
-  filterDescription="title or author"
   items={data.books}
-  key="id"
   columns={[
-    { title: 'Title', prop: 'title' },
+    { title: 'Title', grow: true, accessor: 'title' },
+    { title: 'Price', grow: true, align: 'right', accessor: 'price' },
     {
       title: 'Author',
-      render: ({ author: { firstName, lastName } }) => `${firstName} ${lastName}`
+      nowrap: true,
+      accessor: ({ author: { firstName, lastName } }) => `${firstName} ${lastName}`
     },
-    { title: 'Price', render: ({ price }) => price.toFixed(2), textAlign: 'right' },
-    {
-      title: 'Last updated',
-      render: ({ updatedAt }) => formatDistanceToNow(updatedAt) + ' ago',
-      textAlign: 'right'
-    }
+    { title: 'Stores', align: 'right', accessor: (book) => book._count.stores }
   ]}
-  on:filter={handleFilter}
   on:add={handleAdd}
   on:edit={handleEdit}
   on:delete={handleDelete}
 />
 
 <ModalEditor
-  title={book.id ? book.title : 'New book'}
-  visible={editorVisible}
-  busy={editorBusy}
-  on:close={handleEditorClose}
-  on:save={handleEditorSave}
+  {item}
+  arrayFields={['storeIds']}
+  itemName="book"
+  on:cancel={handleCancel}
+  on:save={handleSave}
 >
-  <TextInput label="Title" required bind:value={book.title} error={editorErrors?.title} />
+  <TextInput name="title" label="Title" required {errors} {item} />
   <div class="grid">
-    <Select
-      label="Author"
-      required
-      getOptions={getAuthorOptions}
-      bind:value={book.authorId}
-      error={editorErrors?.authorId}
-    />
-    <TextInput label="Price" required bind:value={book.price} error={editorErrors?.price} />
+    <Select name="authorId" label="Author" required {errors} {item} options={authors} />
+    <TextInput name="price" label="Price" price required {errors} {item} />
   </div>
-  <TextareaInput label="Excerpt" bind:value={book.excerpt} error={editorErrors?.excerpt} />
+  <TextareaInput name="excerpt" label="Excerpt" {errors} {item} />
+  <CheckboxList name="storeIds" label="Store availability" {item} options={stores} />
 </ModalEditor>
+
+<AuthorizationAlert visible={needsAuthorization} on:close={() => (needsAuthorization = false)} />

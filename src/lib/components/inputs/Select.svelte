@@ -1,41 +1,34 @@
 <script lang="ts">
-  import { onMount } from 'svelte';
   import LabelAsterisk from './LabelAsterisk.svelte';
 
-  type Option = { value: string; label: string };
-
+  export let name: string;
   export let label: string;
-  export let getOptions: () => Promise<Option[]>;
-  export let value = '';
+  export let item: Record<string, unknown> | null;
+  export let options: { value: string; label: string }[];
   export let required = false;
-  export let error: string | void;
+  export let errors: { message: string; path: string[] }[] | null = null;
 
-  let options: Option[] = [];
-  let loading = false;
-
-  const load = async () => {
-    loading = true;
-    options = await getOptions();
-    loading = false;
-  };
-
-  onMount(load);
+  $: error = errors?.find((e) => e.path.includes(name));
 </script>
 
-<label aria-busy={loading}>
+<label>
   {label}<LabelAsterisk {required} />
-  <select bind:value on:focus={load} aria-invalid={error ? 'true' : undefined}>
+  <select {name} value={item?.[name]} aria-invalid={error ? 'true' : undefined}>
     <option value="">Select...</option>
     {#each options as { value, label } (value)}
       <option {value}>{label}</option>
     {/each}
   </select>
   {#if error}
-    <small>{error}</small>
+    <small>{error.message}</small>
   {/if}
 </label>
 
 <style>
+  select {
+    margin-bottom: 0.5em;
+  }
+
   small {
     color: var(--form-element-invalid-active-border-color);
   }

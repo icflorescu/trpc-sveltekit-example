@@ -1,126 +1,239 @@
 <script lang="ts">
-  import { createEventDispatcher } from 'svelte';
+  import { goto } from '$app/navigation';
+  import { page } from '$app/stores';
+  import dayjs from '$lib/dayjs';
+  import IconAdd from '$lib/icons/IconAdd.svelte';
+  import IconEmpty from '$lib/icons/IconEmpty.svelte';
+  import IconPencil from '$lib/icons/IconPencil.svelte';
+  import IconTrash from '$lib/icons/IconTrash.svelte';
+  import IconVerticalDots from '$lib/icons/IconVerticalDots.svelte';
+  import debounce from 'debounce';
+  import { createEventDispatcher, onDestroy } from 'svelte';
+  import { fade } from 'svelte/transition';
   import BusyOverlay from './BusyOverlay.svelte';
-  import DataTableHeader from './DataTableHeader.svelte';
-  import DataTableStatus from './DataTableStatus.svelte';
-  import IconDelete from './icons/IconDelete.svelte';
-  import IconDotsVertical from './icons/IconDotsVertical.svelte';
-  import IconEdit from './icons/IconEdit.svelte';
 
-  type T = $$Generic;
+  type T = $$Generic<{ id: string; updatedAt: Date }>;
 
+  export let busy = false;
   export let title: string;
-  export let filterDescription: string;
-  export let loading: boolean;
   export let items: T[];
-  export let key: keyof T;
-  export let columns: ({ title: string; textAlign?: 'center' | 'right' } & (
-    | { prop: keyof T; render?: never }
-    | { prop?: never; render: (item: T) => string | number }
-  ))[];
+  export let columns: {
+    title: string;
+    grow?: true;
+    nowrap?: true;
+    align?: 'center' | 'right';
+    accessor: ((record: T) => string | number) | keyof T;
+  }[];
 
-  const dispatch = createEventDispatcher<{
-    add: never;
-    edit: { itemKey: unknown };
-    delete: { itemKey: unknown };
-  }>();
+  const dispatch = createEventDispatcher<{ add: never; edit: string; delete: string }>();
 
-  const handleAddClick = () => {
-    dispatch('add');
-  };
+  const filter = debounce((q: string) => {
+    goto(`${location.pathname}${q ? `?q=${q}` : ''}`, { keepFocus: true });
+  }, 500);
+
+  onDestroy(() => filter.clear());
 </script>
 
-<div class="root">
-  <DataTableHeader {title} on:click={handleAddClick} {filterDescription} on:filter />
-  <table>
-    <thead>
-      <tr>
-        <th class="number">#</th>
-        {#each columns as { title, textAlign } (title)}
-          <th style:text-align={textAlign || 'left'}>{title}</th>
-        {/each}
-        <th class="actions"><IconDotsVertical /></th>
-      </tr>
-    </thead>
-    <tbody>
-      {#each items as item, index (item[key])}
+<article>
+  <BusyOverlay visible={busy} />
+  <div class="header">
+    <h2 class="title">{title}</h2>
+    <div class="filter">
+      <input
+        type="search"
+        placeholder="filter..."
+        value={$page.url.searchParams.get('q')}
+        on:input={(e) => filter(e.currentTarget.value)}
+      />
+      <!-- svelte-ignore a11y-click-events-have-key-events -->
+      <div
+        class="clear-filter"
+        title="Clear filter"
+        on:click={() => goto(location.pathname, { keepFocus: true })}
+      />
+    </div>
+    <!-- svelte-ignore a11y-click-events-have-key-events -->
+    <div class="icon-button" title="Add" on:click={() => dispatch('add')}><IconAdd /></div>
+  </div>
+  <figure>
+    <table>
+      <thead>
         <tr>
-          <td class="number">{index + 1}</td>
-          {#each columns as { prop, title, textAlign, render } (title)}
-            <td style:text-align={textAlign || 'left'}>{prop ? item[prop] : render?.(item)}</td>
+          <th scope="col">#</th>
+          {#each columns as { title, grow, nowrap, align } (title)}
+            <th
+              scope="col"
+              style:width={grow ? '100%' : undefined}
+              class:nowrap
+              class:align-center={align === 'center'}
+              class:align-right={align === 'right'}>{title}</th
+            >
           {/each}
-          <td class="actions">
-            <!-- svelte-ignore a11y-click-events-have-key-events -->
-            <span class="action" on:click={() => dispatch('edit', { itemKey: item[key] })}>
-              <IconEdit />
-            </span>
-            <!-- svelte-ignore a11y-click-events-have-key-events -->
-            <span class="action danger" on:click={() => dispatch('delete', { itemKey: item[key] })}>
-              <IconDelete />
-            </span>
-          </td>
+          <th scope="col" class="align-right nowrap">Last updated</th>
+          <th scope="col" class="align-right row-actions-header" title="Row actions">
+            <IconVerticalDots />
+          </th>
         </tr>
-      {:else}
-        <DataTableStatus
-          {loading}
-          itemsPluralName={title.toLowerCase()}
-          columnsLength={columns.length}
-          on:add
-        />
-      {/each}
-    </tbody>
-  </table>
-  <BusyOverlay enabled={loading} />
-</div>
+      </thead>
+      <tbody>
+        {#if items.length}
+          {#each items as item, index (item.id)}
+            <tr>
+              <td>{index + 1}</td>
+              {#each columns as { title, nowrap, align, accessor } (title)}
+                <td
+                  class:nowrap
+                  class:align-center={align === 'center'}
+                  class:align-right={align === 'right'}
+                >
+                  {typeof accessor === 'function' ? accessor(item) : item[accessor]}
+                </td>
+              {/each}
+              <td class="align-right nowrap">{dayjs(item.updatedAt).fromNow()}</td>
+              <td class="align-right nowrap">
+                <!-- svelte-ignore a11y-click-events-have-key-events -->
+                <div
+                  class="icon-button row"
+                  title="Edit"
+                  on:click={() => dispatch('edit', item.id)}
+                >
+                  <IconPencil />
+                </div>
+                <!-- svelte-ignore a11y-click-events-have-key-events -->
+                <div
+                  class="icon-button row delete"
+                  title="Delete"
+                  on:click={() => dispatch('delete', item.id)}
+                >
+                  <IconTrash />
+                </div>
+              </td>
+            </tr>
+          {/each}
+        {:else}
+          <tr>
+            <td colspan={columns.length + 3}>
+              <div class="empty" in:fade>
+                <div class="empty-icon"><IconEmpty size="5em" /></div>
+                No items found.
+              </div>
+            </td>
+          </tr>
+        {/if}
+      </tbody>
+    </table>
+  </figure>
+</article>
 
 <style lang="scss">
-  .root {
+  figure {
+    margin: 0;
+  }
+
+  article {
     position: relative;
-    overflow: hidden;
-    border: var(--border-width) solid var(--table-border-color);
-    border-radius: var(--border-radius);
-    background: var(--card-background-color);
+    padding: 0;
+    border: 1px solid var(--muted-border-color);
+  }
+
+  .header {
+    display: flex;
+    gap: 1em;
+    align-items: center;
+    padding: 1em 1em 0.5em;
+  }
+
+  h2 {
+    font-size: 1.25em;
+    font-weight: 500;
+    color: var(--h6-color);
+    margin: -0.1em 0 0;
+  }
+
+  .filter {
+    flex: 1 1 auto;
+    position: relative;
+  }
+
+  .clear-filter {
+    cursor: pointer;
+    position: absolute;
+    top: calc(50% - 0.5em);
+    right: 1em;
+    width: 1em;
+    height: 1em;
+    background: var(--icon-close) center/auto 1rem no-repeat;
+    &:hover {
+      filter: brightness(1.5);
+    }
+  }
+
+  input {
+    margin: 0;
+    padding-right: 2.5em;
   }
 
   table {
-    margin-bottom: 0;
-    :global(tbody tr:last-child td) {
-      border-bottom: 0;
+    margin: 0;
+  }
+
+  th {
+    --border-width: 1px;
+  }
+
+  .row-actions-header > {
+    :global(svg) {
+      margin-top: -0.25em;
     }
   }
 
-  th.number {
-    text-align: right;
-    width: 0;
+  tr:last-child td {
+    border-bottom: 0;
   }
 
-  td.number {
+  .empty {
+    color: var(--muted-color);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5em;
+    padding: 1em 0;
+  }
+
+  .empty-icon {
+    opacity: 0.5;
+  }
+
+  .align-center {
+    text-align: center;
+  }
+
+  .align-right {
     text-align: right;
   }
 
-  th.actions {
-    text-align: right;
-    width: 0;
-  }
-
-  td.actions {
-    text-align: right;
+  .nowrap {
     white-space: nowrap;
   }
 
-  .action {
+  .icon-button {
+    display: inline-flex;
     cursor: pointer;
-    &:not(:first-child) {
-      margin-left: 0.25em;
-    }
-    opacity: 0.75;
+    padding: 0.25em;
+    margin: -0.25em;
     color: var(--primary);
-    transition: opacity 0.2s;
+    transition: filter 0.2s;
     &:hover {
-      opacity: 1;
+      filter: brightness(1.5);
     }
-    &.danger {
-      color: var(--del-color);
+    &.row {
+      &:not(:first-child) {
+        margin-left: 0.25em;
+      }
+      &.delete {
+        color: var(--del-color);
+      }
     }
   }
 </style>

@@ -3,6 +3,9 @@ node_modules
 /build
 /.svelte-kit
 /package
-.env
-.env.*
-!.env.example
+
+# You should uncomment the next lines in your appplication
+
+# .env
+# .env.*
+# !.env.example

@@ -1,89 +1,74 @@
 <script lang="ts">
-  import getEditorErrors from '$lib/client/getEditorErrors';
-  import type { InferMutationInput } from '$lib/client/trpc';
-  import trpc from '$lib/client/trpc';
+  import { invalidateAll } from '$app/navigation';
+  import AuthorizationAlert from '$lib/components/AuthorizationAlert.svelte';
   import DataTable from '$lib/components/DataTable.svelte';
   import TextInput from '$lib/components/inputs/TextInput.svelte';
   import ModalEditor from '$lib/components/ModalEditor.svelte';
-  import { formatDistanceToNow } from 'date-fns';
-  import debounce from 'debounce';
+  import { savable } from '$lib/savable';
+  import { trpc } from '$lib/trpc/client';
+  import type { RouterInputs } from '$lib/trpc/router';
+  import { TRPCClientError } from '@trpc/client';
   import type { PageData } from './$types';
 
   export let data: PageData;
 
-  type Store = InferMutationInput<'stores:save'>;
-  type EditorErrors = { name?: string } | void;
+  let busy = false;
+  let item: RouterInputs['stores']['save'] | null = null;
+  let errors: { message: string; path: string[] }[] | null = null;
+  let needsAuthorization = false;
 
-  const newStore = (): Store => ({
-    id: null,
-    name: '',
-    bookIds: []
-  });
-
-  let loading = false;
-  let query = '';
-  let store = newStore();
-  let editorVisible = false;
-  let editorBusy = false;
-  let editorErrors: EditorErrors;
-
-  const reloadStores = async () => {
-    loading = true;
-    data.stores = await trpc().query('stores:browse', query);
-    loading = false;
+  const handleAdd = async () => {
+    item = { id: null, name: '' };
   };
 
-  const reloadBooks = async () => {
-    editorBusy = true;
-    data.bookList = await trpc().query('books:list');
-    editorBusy = false;
-  };
-
-  $: if (editorBusy) reloadBooks();
-
-  const handleFilter = debounce((e: CustomEvent<string>) => {
-    query = e.detail;
-    reloadStores();
-  }, 500);
-
-  const handleAdd = () => {
-    store = newStore();
-    editorErrors = undefined;
-    editorVisible = true;
-  };
-
-  const handleEdit = async (e: CustomEvent<{ itemKey: string }>) => {
-    editorErrors = undefined;
-    editorBusy = true;
-    editorVisible = true;
-    const data = await trpc().query('stores:read', e.detail.itemKey);
-    if (data) store = { ...data, bookIds: data.books.map(({ id }) => id) };
-    editorBusy = false;
-  };
-
-  const handleDelete = async (e: CustomEvent<{ itemKey: string }>) => {
-    loading = true;
-    await trpc().mutation('stores:delete', e.detail.itemKey);
-    reloadStores();
-  };
-
-  const handleEditorClose = () => {
-    editorVisible = false;
-    store = newStore();
-    editorErrors = undefined;
-  };
-
-  const handleEditorSave = async () => {
-    editorBusy = true;
-    try {
-      await trpc().mutation('stores:save', store);
-      editorVisible = false;
-      store = newStore();
-      reloadStores();
-    } catch (err) {
-      editorErrors = getEditorErrors(err);
+  const handleEdit = async (e: CustomEvent<string>) => {
+    if (!data.isAuthenticated) {
+      needsAuthorization = true;
+      return;
     }
-    editorBusy = false;
+
+    busy = true;
+    item = await trpc().stores.load.query(e.detail);
+    busy = false;
+  };
+
+  const handleDelete = async (e: CustomEvent<string>) => {
+    if (!data.isAuthenticated) {
+      needsAuthorization = true;
+      return;
+    }
+
+    busy = true;
+    await trpc().stores.delete.mutate(e.detail);
+    await invalidateAll();
+    busy = false;
+  };
+
+  const handleCancel = () => {
+    item = null;
+    errors = null;
+  };
+
+  const handleSave = async (e: { detail: RouterInputs['stores']['save'] }) => {
+    if (!data.isAuthenticated) {
+      needsAuthorization = true;
+      return;
+    }
+
+    busy = true;
+    try {
+      await trpc().stores.save.mutate(savable(e.detail));
+      item = null;
+      await invalidateAll();
+    } catch (err) {
+      if (err instanceof TRPCClientError) {
+        errors = JSON.parse(err.message);
+      } else {
+        throw err;
+      }
+    } finally {
+      busy = false;
+    }
   };
 </script>
 
@@ -92,47 +77,20 @@
 </svelte:head>
 
 <DataTable
-  {loading}
+  {busy}
   title="Stores"
-  filterDescription="name"
   items={data.stores}
-  key="id"
   columns={[
-    { title: 'Name', prop: 'name' },
-    { title: 'Titles in stock', textAlign: 'right', render: (store) => store._count.books },
-    {
-      title: 'Last updated',
-      textAlign: 'right',
-      render: ({ updatedAt }) => formatDistanceToNow(updatedAt) + ' ago'
-    }
+    { title: 'Name', grow: true, accessor: 'name' },
+    { title: 'Titles', align: 'right', accessor: (store) => store._count.books }
   ]}
-  on:filter={handleFilter}
   on:add={handleAdd}
   on:edit={handleEdit}
   on:delete={handleDelete}
 />
 
-<ModalEditor
-  title={store.id ? store.name : 'New store'}
-  visible={editorVisible}
-  busy={editorBusy}
-  on:close={handleEditorClose}
-  on:save={handleEditorSave}
->
-  <TextInput label="Name" required bind:value={store.name} error={editorErrors?.name} />
-  <fieldset>
-    <legend>Titles in stock</legend>
-    {#each data.bookList as { id, title, author: { firstName, lastName } } (id)}
-      <label>
-        <input type="checkbox" bind:group={store.bookIds} value={id} />
-        {title} <em class="author">by {firstName} {lastName}</em>
-      </label>
-    {/each}
-  </fieldset>
+<ModalEditor {item} itemName="store" on:cancel={handleCancel} on:save={handleSave}>
+  <TextInput name="name" label="Name" required {errors} {item} />
 </ModalEditor>
 
-<style>
-  .author {
-    opacity: 0.33;
-  }
-</style>
+<AuthorizationAlert visible={needsAuthorization} on:close={() => (needsAuthorization = false)} />

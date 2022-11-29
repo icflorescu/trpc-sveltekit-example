@@ -20,6 +20,7 @@
 <style>
   footer {
     background: var(--card-background-color);
+    border-top: 1px solid var(--muted-border-color);
     font-size: 0.75em;
     text-align: center;
     padding: 1em;

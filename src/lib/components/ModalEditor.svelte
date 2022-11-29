@@ -1,69 +1,93 @@
 <script lang="ts">
-  import { browser } from '$app/environment';
+  import dayjs from '$lib/dayjs';
+  import IconClock from '$lib/icons/IconClock.svelte';
   import { createEventDispatcher } from 'svelte';
-  import { fly } from 'svelte/transition';
   import BusyOverlay from './BusyOverlay.svelte';
 
-  export let visible: boolean;
-  export let busy: boolean;
-  export let title: string;
+  type T = $$Generic;
 
-  const dispatch = createEventDispatcher<{ save: never; close: never }>();
+  export let itemName: string;
+  export let item:
+    | (T & {
+        id: string | null;
+        updatedAt?: Date;
+        updatedBy?: { name: string } | null;
+      })
+    | null;
+  export let busy = false;
+  export let arrayFields: string[] | undefined = undefined;
 
-  const handleCancelClick = () => {
-    dispatch('close');
+  const dispatch = createEventDispatcher<{ cancel: never; save: T }>();
+
+  const handleCancel = () => {
+    dispatch('cancel');
   };
 
-  const handleKeyDown = (e: KeyboardEvent) => {
-    if (e.code === 'Escape') dispatch('close');
-  };
+  const handleSave = (e: { currentTarget: HTMLFormElement }) => {
+    const formData = new FormData(e.currentTarget);
+    const data: Record<string, unknown> = {};
 
-  $: {
-    if (browser) {
-      visible
-        ? window.addEventListener('keydown', handleKeyDown)
-        : window.removeEventListener('keydown', handleKeyDown);
+    if (arrayFields) {
+      for (const key of arrayFields) {
+        data[key] = [];
+      }
     }
-  }
+
+    for (let field of formData) {
+      const [key, value] = field;
+      if (arrayFields?.includes(key)) {
+        (data[key] as unknown[]).push(value);
+      } else {
+        data[key] = value;
+      }
+    }
+    dispatch('save', data as T);
+  };
 </script>
 
-<!-- svelte-ignore a11y-click-events-have-key-events -->
-<dialog open={visible} on:click|self={handleCancelClick}>
-  {#if visible}
-    <article transition:fly={{ y: -200, duration: 100 }}>
+<form on:submit|preventDefault={handleSave}>
+  <dialog open={!!item}>
+    <input type="hidden" name="id" value={item?.id} />
+    <article>
+      <BusyOverlay visible={busy} />
       <header>
         <!-- svelte-ignore a11y-missing-content -->
         <a
-          href="#close"
-          aria-label="Close"
+          href="#cancel"
+          aria-label="Cancel"
           class="close"
-          on:click|preventDefault={handleCancelClick}
+          on:click|preventDefault={handleCancel}
         />
-        {title}
+        {item?.id ? 'Edit' : 'Add'}
+        {itemName}
       </header>
       <slot />
+      {#if item?.id}
+        <small>
+          <span class="clock-icon"><IconClock /></span>
+          Last updated
+          {dayjs(item.updatedAt).fromNow()}
+          {item.updatedBy ? ` by ${item.updatedBy.name}` : ''}
+        </small>
+      {/if}
       <footer>
-        <a
-          href="#cancel"
-          role="button"
-          class="secondary"
-          on:click|preventDefault={handleCancelClick}>Cancel</a
-        >
-        <a href="#save" role="button" on:click|preventDefault={() => dispatch('save')}>Save</a>
+        <button class="secondary" on:click|preventDefault={handleCancel}>Cancel</button>
+        <button type="submit">Save</button>
       </footer>
-      <BusyOverlay enabled={busy} />
     </article>
-  {/if}
-</dialog>
+  </dialog>
+</form>
 
 <style lang="scss">
-  @use 'sass:map';
-  @import '@picocss/pico/scss/variables';
+  small {
+    display: block;
+    margin-left: 1.5em;
+    text-indent: -1.5em;
+    color: var(--muted-color);
+  }
 
-  article {
-    position: relative;
-    @media (min-width: map.get($breakpoints, 'lg')) {
-      width: 700px;
-    }
+  .clock-icon {
+    vertical-align: text-bottom;
+    margin-right: 0.25em;
   }
 </style>
