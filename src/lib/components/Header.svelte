@@ -1,8 +1,7 @@
 <script lang="ts">
   import { invalidateAll } from '$app/navigation';
+  import { page } from '$app/stores';
   import HeaderNavLink from './HeaderNavLink.svelte';
-
-  export let isAuthenticated: boolean;
 
   const logout = async () => {
     await fetch('/logout', { method: 'POST' });
@@ -21,7 +20,7 @@
       <HeaderNavLink to="/authors" title="Authors" />
       <HeaderNavLink to="/books" title="Books" />
       <HeaderNavLink to="/stores" title="Stores" />
-      {#if isAuthenticated}
+      {#if $page.data.isAuthenticated}
         <HeaderNavLink on:click={logout} title="Logout" />
       {:else}
         <HeaderNavLink to="/login" title="Login" />
