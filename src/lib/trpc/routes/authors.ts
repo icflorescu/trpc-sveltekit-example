@@ -19,7 +19,9 @@ export const authors = t.router({
         },
         orderBy: { updatedAt: 'desc' },
         where: input
-          ? { OR: [{ firstName: { contains: input } }, { lastName: { contains: input } }] }
+          ? {
+              OR: [{ firstName: { contains: input } }, { lastName: { contains: input } }]
+            }
           : undefined
       })
     ),

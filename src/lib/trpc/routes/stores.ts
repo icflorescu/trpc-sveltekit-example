@@ -21,13 +21,14 @@ export const stores = t.router({
       })
     ),
 
-  loadOptions: t.procedure
-    .use(logger)
-    .query(() =>
-      prisma.store
-        .findMany({ select: { id: true, name: true }, orderBy: { name: 'asc' } })
-        .then((stores) => stores.map(({ id, name }) => ({ label: name, value: id })))
-    ),
+  loadOptions: t.procedure.use(logger).query(() =>
+    prisma.store
+      .findMany({
+        select: { id: true, name: true },
+        orderBy: { name: 'asc' }
+      })
+      .then((stores) => stores.map(({ id, name }) => ({ label: name, value: id })))
+  ),
 
   load: t.procedure
     .use(logger)

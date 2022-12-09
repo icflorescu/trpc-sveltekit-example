@@ -9,10 +9,18 @@ async function main() {
   await prisma.author.deleteMany();
 
   await prisma.user.create({
-    data: { name: 'John Doe', email: 'john@mail.com', passwordHash: await md5('1234') }
+    data: {
+      name: 'John Doe',
+      email: 'john@mail.com',
+      passwordHash: await md5('1234')
+    }
   });
   await prisma.user.create({
-    data: { name: 'Jane Doe', email: 'jane@mail.com', passwordHash: await md5('qwer') }
+    data: {
+      name: 'Jane Doe',
+      email: 'jane@mail.com',
+      passwordHash: await md5('qwer')
+    }
   });
 
   await prisma.author.create({

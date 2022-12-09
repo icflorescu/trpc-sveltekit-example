@@ -9,7 +9,9 @@ export async function createContext(event: RequestEvent) {
     // 👆 or, if we're using HTTP headers based authentication, we could do something like this:
     // const token = event.request.headers.get('authorization')?.replace('Bearer ', '');
 
-    const { id: userId } = jwt.verify(token || '', JWT_SECRET) as { id: string };
+    const { id: userId } = jwt.verify(token || '', JWT_SECRET) as {
+      id: string;
+    };
 
     return { userId };
   } catch {
