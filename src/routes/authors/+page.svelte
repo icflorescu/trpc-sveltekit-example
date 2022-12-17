@@ -9,9 +9,10 @@
   import { trpc } from '$lib/trpc/client';
   import type { RouterInputs } from '$lib/trpc/router';
   import { TRPCClientError } from '@trpc/client';
+  import type { LayoutServerData } from '../$types';
   import type { PageData } from './$types';
 
-  export let data: PageData;
+  export let data: PageData & LayoutServerData;
 
   let busy = false;
   let item: RouterInputs['authors']['save'] | null = null; // 👈 we're using a helper type
@@ -92,11 +93,7 @@
       grow: true,
       accessor: ({ firstName, lastName }) => `${firstName} ${lastName}`
     },
-    {
-      title: 'Books',
-      align: 'right',
-      accessor: (author) => author._count.books
-    }
+    { title: 'Books', align: 'right', accessor: (author) => author._count.books }
   ]}
   on:add={handleAdd}
   on:edit={handleEdit}
