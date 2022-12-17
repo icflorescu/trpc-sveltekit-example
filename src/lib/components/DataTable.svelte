@@ -25,11 +25,7 @@
     accessor: ((record: T) => string | number) | keyof T;
   }[];
 
-  const dispatch = createEventDispatcher<{
-    add: never;
-    edit: string;
-    delete: string;
-  }>();
+  const dispatch = createEventDispatcher<{ add: never; edit: string; delete: string }>();
 
   const filter = debounce((q: string) => {
     goto(`${location.pathname}${q ? `?q=${q}` : ''}`, { keepFocus: true });
@@ -57,9 +53,7 @@
       />
     </div>
     <!-- svelte-ignore a11y-click-events-have-key-events -->
-    <div class="icon-button" title="Add" on:click={() => dispatch('add')}>
-      <IconAdd />
-    </div>
+    <div class="icon-button" title="Add" on:click={() => dispatch('add')}><IconAdd /></div>
   </div>
   <figure>
     <table>
