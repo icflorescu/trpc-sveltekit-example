@@ -92,11 +92,7 @@
       grow: true,
       accessor: ({ firstName, lastName }) => `${firstName} ${lastName}`
     },
-    {
-      title: 'Books',
-      align: 'right',
-      accessor: (author) => author._count.books
-    }
+    { title: 'Books', align: 'right', accessor: (author) => author._count.books }
   ]}
   on:add={handleAdd}
   on:edit={handleEdit}

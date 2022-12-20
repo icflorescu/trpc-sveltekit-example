@@ -2,6 +2,9 @@
   import Footer from '$lib/components/Footer.svelte';
   import Header from '$lib/components/Header.svelte';
   import '@picocss/pico';
+  import type { LayoutData } from './$types';
+
+  export let data: LayoutData;
 </script>
 
 <svelte:head>
@@ -14,7 +17,7 @@
   />
 </svelte:head>
 
-<Header />
+<Header isAuthenticated={data.isAuthenticated} />
 <main class="container">
   <slot />
 </main>

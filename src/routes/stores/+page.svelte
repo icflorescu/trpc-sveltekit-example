@@ -82,11 +82,7 @@
   items={data.stores}
   columns={[
     { title: 'Name', grow: true, accessor: 'name' },
-    {
-      title: 'Titles',
-      align: 'right',
-      accessor: (store) => store._count.books
-    }
+    { title: 'Titles', align: 'right', accessor: (store) => store._count.books }
   ]}
   on:add={handleAdd}
   on:edit={handleEdit}
