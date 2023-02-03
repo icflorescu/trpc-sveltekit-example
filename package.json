@@ -11,8 +11,8 @@
     "dev": "vite --clearScreen false",
     "build": "vite build",
     "preview": "vite preview",
-    "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
-    "check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
+    "check": "svelte-kit sync && svelte-check",
+    "check:watch": "svelte-kit sync && svelte-check --watch",
     "lint": "prettier --plugin-search-dir . --check . && eslint .",
     "format": "prettier --plugin-search-dir . --write ."
   },
@@ -49,7 +49,7 @@
     "prettier": "^2.8.3",
     "prettier-plugin-svelte": "^2.9.0",
     "prisma": "^4.9.0",
-    "trpc-sveltekit": "^3.2.7",
+    "trpc-sveltekit": "^3.2.9",
     "zod": "^3.20.2"
   },
   "prisma": {

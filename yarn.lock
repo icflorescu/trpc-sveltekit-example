@@ -1636,10 +1636,10 @@ totalist@^3.0.0:
   resolved "https://registry.yarnpkg.com/totalist/-/totalist-3.0.0.tgz#4ef9c58c5f095255cdc3ff2a0a55091c57a3a1bd"
   integrity sha512-eM+pCBxXO/njtF7vdFsHuqb+ElbxqtI4r5EAvk6grfAFyJ6IvWlSkfZ5T9ozC6xWw3Fj1fGoSmrl0gUs46JVIw==
 
-trpc-sveltekit@^3.2.7:
-  version "3.2.7"
-  resolved "https://registry.yarnpkg.com/trpc-sveltekit/-/trpc-sveltekit-3.2.7.tgz#8fd05e61bd150e17e0e8e8e4f84b3621b2e59ff7"
-  integrity sha512-61UrbNylz5GEMEVPZtg2awr7KM37Yr0htrQA0S1Tt2ciOy1sU3KgFSDsI31ASLR8jUlfIhgKi4uVtS+lQdDE3w==
+trpc-sveltekit@^3.2.9:
+  version "3.2.9"
+  resolved "https://registry.yarnpkg.com/trpc-sveltekit/-/trpc-sveltekit-3.2.9.tgz#a8dd4d00c53938d11a5574aa9bcff89b6ee4b12a"
+  integrity sha512-MJO5Rw8bjIVqzPxZ+NTWrfrfP3Hx0v0melEp5Qteu/X8L+c2Jlx9dU4uOQzKZrPTjXjCaO9QpU2uhEnomq0pyg==
   dependencies:
     "@trpc/client" "^10.9.1"
     "@trpc/server" "^10.9.1"
