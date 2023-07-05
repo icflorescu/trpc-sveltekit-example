@@ -25,7 +25,7 @@
     accessor: ((record: T) => string | number) | keyof T;
   }[];
 
-  const dispatch = createEventDispatcher<{ add: never; edit: string; delete: string }>();
+  const dispatch = createEventDispatcher<{ add: undefined; edit: string; delete: string }>();
 
   const filter = debounce((q: string) => {
     goto(`${location.pathname}${q ? `?q=${q}` : ''}`, { keepFocus: true });
@@ -45,14 +45,14 @@
         value={$page.url.searchParams.get('q')}
         on:input={(e) => filter(e.currentTarget.value)}
       />
-      <!-- svelte-ignore a11y-click-events-have-key-events -->
+      <!-- svelte-ignore a11y-click-events-have-key-events a11y-no-static-element-interactions -->
       <div
         class="clear-filter"
         title="Clear filter"
         on:click={() => goto(location.pathname, { keepFocus: true })}
       />
     </div>
-    <!-- svelte-ignore a11y-click-events-have-key-events -->
+    <!-- svelte-ignore a11y-click-events-have-key-events a11y-no-static-element-interactions -->
     <div class="icon-button" title="Add" on:click={() => dispatch('add')}><IconAdd /></div>
   </div>
   <figure>
@@ -91,7 +91,7 @@
               {/each}
               <td class="align-right nowrap">{dayjs(item.updatedAt).fromNow()}</td>
               <td class="align-right nowrap">
-                <!-- svelte-ignore a11y-click-events-have-key-events -->
+                <!-- svelte-ignore a11y-click-events-have-key-events a11y-no-static-element-interactions -->
                 <div
                   class="icon-button row"
                   title="Edit"
@@ -99,7 +99,7 @@
                 >
                   <IconPencil />
                 </div>
-                <!-- svelte-ignore a11y-click-events-have-key-events -->
+                <!-- svelte-ignore a11y-click-events-have-key-events a11y-no-static-element-interactions -->
                 <div
                   class="icon-button row delete"
                   title="Delete"
