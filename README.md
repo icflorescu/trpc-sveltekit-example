@@ -1,6 +1,7 @@
 # 😎 tRPC-SvelteKit example: Bookstall
 
 [![License][license-image]][license-url]
+[![Sponsor the author][sponsor-image]][sponsor-url]
 
 A sample SvelteKit application built to illustrate the usage of [trpc-sveltekit](https://icflorescu.github.io/trpc-sveltekit/).
 
@@ -18,3 +19,5 @@ The [ISC License](LICENSE).
 
 [license-image]: http://img.shields.io/npm/l/trpc-sveltekit.svg?style=flat-square
 [license-url]: LICENSE
+[sponsor-image]: https://img.shields.io/badge/sponsor-violet?style=flat-square
+[sponsor-url]: https://github.com/sponsors/icflorescu
