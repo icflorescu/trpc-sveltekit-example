@@ -11,7 +11,7 @@ A sample SvelteKit application built to illustrate the usage of [trpc-sveltekit]
 
 ## Acknowledgements
 
-Huge thanks to [Alex / KATT](https://github.com/KATT), for bringing us [tRPC](https://trpc.io/) and for being the first sponsor of this project! 🎉
+Huge thanks to [Alex / KATT](https://github.com/KATT), for bringing us [tRPC](https://trpc.io/) and for being the first sponsor of tRPC-SvelteKit! 🎉
 
 ## License
 
